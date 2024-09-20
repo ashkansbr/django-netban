@@ -1,7 +1,7 @@
 from django.db import models
 from common.basemodel import BaseModel
 
-class Book(BaseModel):
+class Books(BaseModel):
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=200)
     genre = models.CharField(max_length=50)

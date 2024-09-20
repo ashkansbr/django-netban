@@ -1,7 +1,9 @@
-from ..models import Book
-
-def get_books_by_genre(genre):
-    return Book.objects.filter(genre=genre)
+from ..models import Books
 
 def get_all_books():
-    return Book.objects.all()
+    """Retrieve all books"""
+    return Books.objects.all()
+
+def get_books_by_genre(genre):
+    """Retrieve books by genre"""
+    return Books.objects.filter(genre=genre)

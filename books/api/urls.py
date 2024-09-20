@@ -1,11 +1,7 @@
-from rest_framework.routers import DefaultRouter
-from django.urls import path, include
-from .views import BookViewSet, BookRecommendationAPIView
-
-router = DefaultRouter()
-router.register(r'books', BookViewSet)
+from django.urls import path
+from .views import BookListAPIView, SuggestBooksAPIView
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('recommend/', BookRecommendationAPIView.as_view()),
+    path('book/list', BookListAPIView.as_view(), name='book-list'),
+    path('suggest', SuggestBooksAPIView.as_view(), name='book-suggest'),
 ]

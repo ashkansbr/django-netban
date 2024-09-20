@@ -1,16 +1,29 @@
 import pytest
-from books.api.services import create_book
-from django.core.exceptions import ValidationError
+from books.models import Books
+
 
 @pytest.mark.django_db
-def test_create_book_success():
-    book = create_book("New Book", "New Author", "Adventure")
-    assert book.title == "New Book"
-    assert book.author == "New Author"
-    assert book.genre == "Adventure"
+def test_list_all_books(api_client, authenticate_user):
+    user = authenticate_user
+
+    Books.objects.create(title="Book 1", author="Author 1", genre="Adventure")
+    Books.objects.create(title="Book 2", author="Author 2", genre="Mystery")
+
+    response = api_client.get('/api/book/list')
+
+    assert response.status_code == 200
+    assert len(response.data) == 2
+    assert response.data[0]['title'] == "Book 1"
+
 
 @pytest.mark.django_db
-def test_create_book_duplicate():
-    create_book("Test Book", "Test Author", "Fiction")
-    with pytest.raises(ValidationError, match="A book with this title and author already exists."):
-        create_book("Test Book", "Test Author", "Fiction")
+def test_filter_books_by_genre(api_client, authenticate_user):
+    user = authenticate_user
+    Books.objects.create(title="Book 1", author="Author 1", genre="Adventure")
+    Books.objects.create(title="Book 2", author="Author 2", genre="Mystery")
+
+    response = api_client.get('/api/book?genre=Adventure')
+
+    assert response.status_code == 200
+    assert len(response.data) == 1
+    assert response.data[0]['title'] == "Book 1"
