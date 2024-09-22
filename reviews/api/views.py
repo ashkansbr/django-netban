@@ -20,25 +20,22 @@ class AddReviewAPIView(APIView):
 
 
 class UpdateReviewAPIView(APIView):
-    def post(self, request):
+    def put(self, request, id):
         user = request.user
-        review_id = request.data.get('review_id')
         rating = request.data.get('rating')
 
         try:
-            review = update_review(user, review_id, rating)
+            review = update_review(user, id, rating)
             return Response(ReviewSerializer(review).data, status=status.HTTP_200_OK)
         except ValidationError as e:
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-
 class DeleteReviewAPIView(APIView):
-    def post(self, request):
+    def post(self, request, id):
         user = request.user
-        review_id = request.data.get('review_id')
 
         try:
-            delete_review(user, review_id)
+            delete_review(user, id)
             return Response(status=status.HTTP_204_NO_CONTENT)
         except ValidationError as e:
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)

@@ -21,7 +21,11 @@ def create_review(user, book_id, rating):
 
 @transaction.atomic
 def update_review(user, review_id, rating):
-    review = Review.objects.get(id=review_id, user=user)
+    try:
+        review = Review.objects.get(id=review_id, user=user)
+    except Review.DoesNotExist:
+        raise ValidationError("Review with the provided ID does not exist for this user.")
+
     if not (1 <= rating <= 5):
         raise ValidationError("Rating must be between 1 and 5.")
 
@@ -32,5 +36,9 @@ def update_review(user, review_id, rating):
 
 @transaction.atomic
 def delete_review(user, review_id):
-    review = Review.objects.get(id=review_id, user=user)
+    try:
+        review = Review.objects.get(id=review_id, user=user)
+    except Review.DoesNotExist:
+        raise ValidationError("Review with the provided ID does not exist for this user.")
+
     review.delete()
