@@ -12,21 +12,6 @@ def create_book(title, author, genre):
     return book
 
 
-def recommend_books_by_genre(user):
-    favorite_genre = (
-        Review.objects.filter(user=user)
-        .values('book__genre')
-        .annotate(count=models.Count('book__genre'))
-        .order_by('-count')
-        .first()
-    )
-
-    if not favorite_genre:
-        raise ValidationError("there is not enough data about you")
-
-    genre = favorite_genre['book__genre']
-    recommended_books = Books.objects.filter(genre=genre).exclude(review__user=user)
-    return recommended_books
 
 
 def suggest_books_based_on_reviews(user):
